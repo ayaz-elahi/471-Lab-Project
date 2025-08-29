@@ -6,8 +6,15 @@ const Product = require('../models/Product');
 // create product
 router.post('/', async (req, res) => {
   try {
-    const { name, description, price, category, image } = req.body;
-    const p = new Product({ name, description, price, category, image: image || '' });
+    const { name, description, price, category, image, isPromotional } = req.body;
+    const p = new Product({ 
+      name, 
+      description, 
+      price, 
+      category, 
+      image: image || '',
+      isPromotional: isPromotional || false
+    });
     await p.save();
     res.status(201).json(p);
   } catch (err) {
@@ -27,7 +34,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET Trending Product (highest salesCount) - MOVE THIS BEFORE /:id
+// GET Trending Product (highest salesCount) - MOVED BEFORE /:id
 router.get('/trending', async (req, res) => {
   try {
     const topProduct = await Product.findOne().sort({ salesCount: -1 }).populate('category');
@@ -41,7 +48,21 @@ router.get('/trending', async (req, res) => {
   }
 });
 
-// single product - MOVE THIS AFTER /trending
+// NEW: GET Promotional Products (for banner)
+router.get('/promotional', async (req, res) => {
+  try {
+    const promotionalProducts = await Product.find({ isPromotional: true })
+      .populate('category')
+      .limit(5)
+      .sort({ createdAt: -1 });
+    res.json(promotionalProducts);
+  } catch (err) {
+    console.error('Error fetching promotional products:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// single product - MOVED AFTER specific routes
 router.get('/:id', async (req, res) => {
   try {
     const p = await Product.findById(req.params.id).populate('category');

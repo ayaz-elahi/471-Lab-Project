@@ -7,7 +7,8 @@ const ProductSchema = new Schema({
   price: { type: Number, required: true },
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
   image: { type: String, default: '' },
-  salesCount: { type: Number, default: 0 }, // store image URL or path later
+  salesCount: { type: Number, default: 0 },
+  isPromotional: { type: Boolean, default: false } // NEW: for promotional banners
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', ProductSchema);

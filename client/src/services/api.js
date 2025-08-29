@@ -24,3 +24,17 @@ export async function getTrendingProduct() {
   if (!data) return [];
   return Array.isArray(data) ? data : [data];
 }
+
+// NEW: Get single product by ID
+export async function getProductById(id) {
+  const res = await fetch(`${BASE}/products/${id}`);
+  if (!res.ok) throw new Error('Failed to load product');
+  return res.json();
+}
+
+// NEW: Get promotional products
+export async function getPromotionalProducts() {
+  const res = await fetch(`${BASE}/products/promotional`);
+  if (!res.ok) throw new Error('Failed to load promotional products');
+  return res.json();
+}
